@@ -14,10 +14,10 @@ fn main() {
     let weights = train_weights(&dataset, 0.1, 5);
     println!("{:?}", weights);
 }
-fn predict(row: &[f64; 3], weights: &Vec<f64>) -> f64 {
+fn predict(row: &[f64; 3], weights: &[f64]) -> f64 {
     let mut activation = weights[0];
     for i in 0..row.len() - 1 {
-        activation += weights[i+1] * row[i]
+        activation += weights[i + 1] * row[i]
     }
     if activation >= 0.0 {
         1.0
@@ -26,7 +26,7 @@ fn predict(row: &[f64; 3], weights: &Vec<f64>) -> f64 {
     }
 }
 
-fn train_weights(dataset: &Vec<[f64; 3]>, learning_rate: f64, num_epoch: u32) -> Vec<f64> {
+fn train_weights(dataset: &[[f64; 3]], learning_rate: f64, num_epoch: u32) -> Vec<f64> {
     let mut weights = vec![0.0; dataset[0].len()];
     for epoch in 0..num_epoch {
         let mut sum_error = 0.0;
@@ -34,9 +34,9 @@ fn train_weights(dataset: &Vec<[f64; 3]>, learning_rate: f64, num_epoch: u32) ->
             let prediction = predict(row, &weights);
             let error = row.last().unwrap() - prediction;
             sum_error += error.powi(2);
-            weights[0] = weights[0] + learning_rate * error;
+            weights[0] += learning_rate * error;
             for i in 0..weights.len() - 1 {
-                weights[i + 1] = weights[i + 1] + learning_rate * error * row[i];
+                weights[i + 1] += learning_rate * error * row[i];
             }
         }
         println!(
